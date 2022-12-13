@@ -43,6 +43,14 @@ functions:
       - http:
           path: articles/{id}
           method: get
+  getArticleByTag:
+    handler: api/handler.getByTag
+    memorySize: 128
+    description: Get article by tag.
+    events:
+      - http:
+          path: articles/tag/{tag}
+          method: get
 
 resources:
   Resources:

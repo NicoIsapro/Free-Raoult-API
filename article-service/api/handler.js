@@ -108,3 +108,28 @@ module.exports.get = (event, context, callback) => {
       return;
     });
 };
+
+module.exports.getByTag = (event, context, callback) => {
+  var params = {
+    ExpressionAttributeValues: {
+     ":tags": {
+       S: event.pathParameters.tag
+      }
+    }, 
+    FilterExpression : "tags CONTAINS :tags", 
+    TableName: process.env.ARTICLES_TABLE
+  };
+  dynamoDb.query(params).promise()
+   .then(result => {
+     const response = {
+       statusCode: 200,
+       body: JSON.stringify(result.Items),
+     };
+     callback(null, response);
+   })
+   .catch(error => {
+     console.error(error);
+     callback(new Error('Couldn\'t fetch articles.'));
+     return;
+   });
+};
