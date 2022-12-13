@@ -51,13 +51,13 @@ const submitArticleP = article => {
     .then(res => article);
 };
 
-const articleData = (title, content, tag) => {
+const articleData = (title, content, tags) => {
   const timestamp = new Date().getTime();
   return {
     id: uuidv4(),
     title: title,
     content: content,
-    tag: tag,
+    tags: tags,
     submittedAt: timestamp,
     updatedAt: timestamp,
   };
@@ -66,7 +66,7 @@ const articleData = (title, content, tag) => {
 module.exports.list = (event, context, callback) => {
   var params = {
       TableName: process.env.ARTICLES_TABLE,
-      ProjectionExpression: "id, title, content, tag"
+      ProjectionExpression: "id, title, content, tags"
   };
 
   console.log("Scanning Candidate table.");
@@ -111,15 +111,14 @@ module.exports.get = (event, context, callback) => {
 
 module.exports.getByTag = (event, context, callback) => {
   var params = {
-    ExpressionAttributeValues: {
-     ":tags": {
-       S: event.pathParameters.tag
-      }
-    }, 
-    FilterExpression : "tags CONTAINS :tags", 
+    FilterExpression: "contains(#tags, :tag)",
+    ExpressionAttributeNames: {
+        "#tags": "tags",
+    },
+    ExpressionAttributeValues: { ":tag": event.pathParameters.tag },
     TableName: process.env.ARTICLES_TABLE
   };
-  dynamoDb.query(params).promise()
+  dynamoDb.scan(params).promise()
    .then(result => {
      const response = {
        statusCode: 200,
