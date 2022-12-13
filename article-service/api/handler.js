@@ -1,7 +1,7 @@
 
 'use strict';
 
-const uuid = require('uuid');
+const {"v4": uuidv4} = require('uuid');
 const AWS = require('aws-sdk'); 
 
 AWS.config.setPromisesDependency(require('bluebird'));
@@ -14,19 +14,19 @@ module.exports.submit = (event, context, callback) => {
   const content = requestBody.content;
   const tags = requestBody.tags;
  
-  if (typeof title !== 'string' || typeof content !== 'string' || typeof tags !== 'array') {
+  if (typeof title !== "string" || typeof content !== "string" || typeof tags !== "object") {
     console.error('Validation Failed');
     callback(new Error('Couldn\'t submit article because of validation errors.'));
     return;
   }
  
-  submitArticleP(ArticleData(title, content, tags))
+  submitArticleP(articleData(title, content, tags))
     .then(res => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify({
           message: `Sucessfully submitted article`,
-          candidateId: res.id
+          articleId: res.id
         })
       });
     })
@@ -54,7 +54,7 @@ const submitArticleP = article => {
 const articleData = (title, content, tag) => {
   const timestamp = new Date().getTime();
   return {
-    id: uuid.v1(),
+    id: uuidv4(),
     title: title,
     content: content,
     tag: tag,
@@ -79,7 +79,7 @@ module.exports.list = (event, context, callback) => {
           return callback(null, {
               statusCode: 200,
               body: JSON.stringify({
-                  candidates: data.Items
+                  articles: data.Items
               })
           });
       }

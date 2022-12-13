@@ -1,10 +1,10 @@
 service: article-service
 
-frameworkVersion: ">=1.1.0 <2.0.0"
+frameworkVersion: ">=1.1.0"
 
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: nodejs18.x
   stage: dev
   region: eu-west-3
   environment:
@@ -20,7 +20,7 @@ provider:
 
 functions:
   articlesSubmission:
-    handler: api/article.submit
+    handler: api/handler.submit
     memorySize: 128
     description: Submit an article.
     events:
@@ -28,12 +28,20 @@ functions:
           path: articles
           method: post
   articlesList:
-    handler: api/articles.list
+    handler: api/handler.list
     memorySize: 128
     description: List articles.
     events:
       - http:
           path: articles
+          method: get
+  getArticle:
+    handler: api/handler.get
+    memorySize: 128
+    description: Get article.
+    events:
+      - http:
+          path: articles/{id}
           method: get
 
 resources:
