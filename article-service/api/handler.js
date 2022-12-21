@@ -78,6 +78,11 @@ module.exports.list = (event, context, callback) => {
           console.log("Scan succeeded.");
           return callback(null, {
               statusCode: 200,
+              headers: {
+                "Access-Control-Allow-Headers" : "Content-Type",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+              },
               body: JSON.stringify({
                   articles: data.Items
               })
@@ -98,6 +103,11 @@ module.exports.get = (event, context, callback) => {
     .then(result => {
       const response = {
         statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Headers" : "Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+        },
         body: JSON.stringify(result.Item),
       };
       callback(null, response);
@@ -122,6 +132,11 @@ module.exports.getByTag = (event, context, callback) => {
    .then(result => {
      const response = {
        statusCode: 200,
+       headers: {
+        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+       },
        body: JSON.stringify(result.Items),
      };
      callback(null, response);
