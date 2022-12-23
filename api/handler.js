@@ -24,6 +24,11 @@ module.exports.submit = (event, context, callback) => {
     .then(res => {
       callback(null, {
         statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Headers" : "Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+         },
         body: JSON.stringify({
           message: `Sucessfully submitted article`,
           articleId: res.id
